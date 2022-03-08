@@ -1,10 +1,18 @@
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+
 import "./App.scss";
-import Homepage from "./pages/homepage.components";
+
+import HomePage from "./pages/homepage.components";
+import ShopPage from "./pages/shop-page/shop.component";
 
 function App() {
   return (
     <div>
-      <Homepage />
+      <Routes>
+           <Route path="/" element={<HomePage />} />
+           <Route path ='/shop' element = {<ShopPage/>} />
+      </Routes>
     </div>
   );
 }
