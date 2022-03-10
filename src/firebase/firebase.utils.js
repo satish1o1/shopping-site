@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-
-
+import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
 const config = {
   apiKey: "AIzaSyBXQdoih_Zpu0RRl6eFHe-ZKBvNKT9VoUo",
@@ -12,15 +12,40 @@ const config = {
   appId: "1:918492835595:web:34fb71b9d6b8a891e33c0e",
 };
 
- initializeApp(config)
+ initializeApp(config);
+const db = getFirestore();
 const provider = new GoogleAuthProvider();
 export const auth = getAuth();
-const signWithGoogle = () => signInWithPopup(auth, provider)
+const signWithGoogle = () => signInWithPopup(auth, provider);
 export default signWithGoogle;
 
+export const createUserProfileDocument = async (userAuth, ...addtionalData) => {
+  if (!userAuth) return;
 
+  const querySnapshot = await getDocs(collection(db, "users"));
+  var exits = false;
+  querySnapshot.forEach((doc) => {
+    if (doc.id == userAuth.uid) {
+      exits = true;
+    }
+  });
 
+  if (!exits) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+    await setDoc(doc(db, "users", `${userAuth.uid}`), {
+      displayName,
+      email,
+      createdAt,
+    });
+  }
+};
+//
+//   const q = query(collection(firestore, 'users'))
+//   const querySnapshot = await getDocs(q ).get()
 
+//   console.log(querySnapshot)
+//};
 
 // import firebase from "firebase/compat/app";
 // import "firebase/compat/auth";
